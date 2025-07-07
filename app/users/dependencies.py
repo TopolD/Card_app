@@ -1,0 +1,61 @@
+from datetime import datetime, timezone
+from typing import Annotated
+
+
+from fastapi import  Request, Depends
+from fastapi.security import OAuth2PasswordBearer
+
+from jose import jwt, JWTError
+
+from app.config import settings
+from app.exceptions import TokenExpiredException, TokeAbsentException, IncorrectTokenFormaException, \
+    UserIsNotPresentHTTPException, InactiveUserException
+
+from app.users.dao import UsersDao
+
+from app.users.dao import ModelUser
+from app.users.schemas import UserBase
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
+def get_token(request: Request, auth: Annotated[str, Depends(oauth2_scheme)]):
+    token = auth or request.cookies.get("token")
+    if not token:
+        raise TokeAbsentException
+    return token
+
+
+async def current_user(token: Annotated[str, Depends(get_token)]):
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY_REFRESH, algorithms=settings.ALGORITHM)
+
+    except JWTError:
+        raise IncorrectTokenFormaException
+
+    expire: str = payload.get('exp')
+    if (not expire) or (int(expire) < datetime.now(timezone.utc).timestamp()):
+        raise TokenExpiredException
+
+    user_id = payload.get('sub')
+
+    if not user_id:
+        raise UserIsNotPresentHTTPException
+    user = await UsersDao.find_by_id(user_id)
+
+    if not user:
+        raise UserIsNotPresentHTTPException
+    return user
+
+# async def get_current_active_user(
+#     user: Annotated[UserBase, Depends(current_user)],
+# ):
+#
+#     if not user:
+#         raise InactiveUserException
+#     return user
+#
+# async def get_current_user_oauth(token: Annotated[str, Depends(oauth2_scheme)]):
+#     return await current_user(token)
+
+async def get_current_user(token: Annotated[str, Depends(get_token)])-> ModelUser:
+    return await current_user(token)

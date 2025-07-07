@@ -12,6 +12,18 @@ class Settings(BaseSettings):
     MONGODB_DATABASE: str
     MONGODB_DATABASE_TESTS: str
 
+    SECRET_KEY: str
+
+    CLIENT_GOOGLE_ID: str
+    CLIENT_SECRET_KEY: str
+
+    SECRET_KEY_ACCESS: str
+    SECRET_KEY_REFRESH: str
+    ALGORITHM: str
+
+    ACCESS_TIME_TOKEN: int
+    REFRESH_TOKEN_EXPIRATION: int
+
     model_config = SettingsConfigDict(env_file=".env")
 
 

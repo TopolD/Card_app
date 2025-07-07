@@ -1,26 +1,19 @@
+import asyncio
 
 import pytest
+from beanie import init_beanie
+from pymongo import AsyncMongoClient
 
 from app.config import settings
-from app.database import engine
+
 from app.main import app as fastapi_app
-from httpx import AsyncClient,ASGITransport
 
-@pytest.fixture(scope="function",autouse=True)
-async def repare_database():
+from httpx import AsyncClient, ASGITransport
 
-    assert settings.MODE =='TEST'
-    collections = await engine.database.list_collection_names()
+from app.users.dao import ModelUser
 
-    assert collections
 
-    for coll in collections:
-        await engine.database.drop_collection(coll)
-
-    for coll in collections:
-        await engine.database.create_collection(coll)
-
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def event_loop():
     loop = asyncio.new_event_loop()
     yield loop
@@ -28,7 +21,23 @@ def event_loop():
 
 
 
+@pytest.fixture( autouse=True)
+async def client(event_loop):
+    client = AsyncMongoClient(settings.MONGODB_URI_TESTS)
+
+    await init_beanie(
+        database=client[settings.MONGODB_DATABASE_TESTS],
+        document_models=[ModelUser]
+    )
+
+
+    yield client
+
+
+    await client.close()
+
+
 @pytest.fixture(scope="function")
-async def ac() :
-    async with AsyncClient(transport=ASGITransport(app=fastapi_app),base_url="http://test") as ac:
+async def ac():
+    async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
         yield ac

@@ -1,31 +1,33 @@
-from app.database import engine
+from typing import Union
+
+from bson import ObjectId
 
 
 class BaseDao:
     model = None
 
     @classmethod
-    async def add_item(cls, item):
+    async def add(cls, item):
         try:
-
-            result = await engine.save(item)
+            result = await cls.model.insert(item)
             return result
         except Exception as e:
             print(e)
+
     @classmethod
     async def find_all(cls, param):
         try:
             if param is None:
                 return None
-            result = await engine.find(cls.model, param)
+            result =   cls.model.find(param)
             return result
         except Exception as e:
             print(e)
 
     @classmethod
-    async def find_by_id(cls, id: int):
+    async def find_by_id(cls,id_: Union[str, ObjectId]):
         try:
-            result = await engine.find_one(cls.model, cls.model.id == id)
+            result = await cls.model.get(id_)
             return result
         except  Exception as e:
             print(e)
@@ -35,14 +37,15 @@ class BaseDao:
         try:
             if not param:
                 return None
-            return await engine.find_one(cls.model, param)
+            result = await cls.model.find(param).first_or_none()
+            return  result
         except Exception as e:
             print(e)
 
     @classmethod
     async def delete_item(cls, item):
         try:
-            await engine.delete(item)
+            await cls.model.delete(item)
             return None
         except Exception as e:
             print(e)

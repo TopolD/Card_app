@@ -1,13 +1,16 @@
 from app.dao.base import BaseDao
-from odmantic import Model
+from beanie import Document
 from pydantic import EmailStr
 
 
-class MUser(Model):
+class ModelUser(Document):
     name: str
     email: EmailStr
-    password_hash: str
+    password: str
 
+
+    class Settings:
+        name = "Users"
 
 class UsersDao(BaseDao):
-    model = MUser
+    model = ModelUser

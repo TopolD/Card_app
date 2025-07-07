@@ -1,34 +1,35 @@
-
 from contextlib import asynccontextmanager
-from logging import info
 
 import uvicorn
+from beanie import init_beanie
 from fastapi import FastAPI
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
+from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import settings
 from app.users.router import router as router_users
+from app.users.dao import ModelUser
 
 @asynccontextmanager
-async def db_lifespan(app: FastAPI):
-    if settings.MODE == 'TEST':
-        app.mongodb_client = AsyncIOMotorClient(settings.MONGODB_URI_TESTS)
-    else:
-        app.mongodb_client = AsyncIOMotorClient(settings.MONGODB_URI)
-    app.database = app.mongodb_client.get_default_database()
-    ping_response = await app.mongodb_client.admin.command("ping")
-    if int(ping_response["ok"]) != 1:
-        raise Exception("Problem connecting to database cluster.")
-    else:
-        info("Connected to database cluster.")
+async def lifespan(app: FastAPI):
+    client = AsyncMongoClient(settings.MONGODB_URI)
 
-    yield
-    app.mongodb_client.close()
+    await init_beanie(
+        database=client[f"{settings.MONGODB_DATABASE}"],
+        document_models=[ModelUser]
+    )
+    try:
+        yield
+    finally:
+        await client.close()
 
-app = FastAPI(lifespan=db_lifespan)
+
+app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
 app.include_router(router_users)
-
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8080)

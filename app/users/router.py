@@ -1,26 +1,77 @@
-from fastapi import APIRouter
+from typing import Annotated
 
+from fastapi import APIRouter, Response, Depends, Request
+from fastapi.security import OAuth2PasswordRequestForm
 
-from app.exceptions import UserAlreadyExistsExceptions
+from app.exceptions import UserAlreadyExistsExceptions, IncorrectEmailOrPasswordException
+from app.users.aouth_google import oauth
 
-from app.users.dao import UsersDao,MUser
-from app.users.schemas import User,SUserAuth
-from app.users.auth import get_password_hash
+from app.users.dao import UsersDao,ModelUser
+# from app.users.dependencies import get_current_active_user
+from app.users.schemas import UserBase, UserCreate, Token, UserRead
+from app.users.auth import get_password_hash, auth_user, create_refresh_token, create_access_token
+
 router = APIRouter(
     prefix="/auth",
     tags=["Auth "]
 )
 
 
-# @router.post("/register", response_model=User)
-# async def register_user(user_data: SUserAuth):
-#     existing_user = await UsersDao.find_one_or_none({'email': user_data.email})
-#     if existing_user:
-#         raise UserAlreadyExistsExceptions
+@router.post("/register")
+async def register_user(user_data: UserCreate):
+    existing_user = await UsersDao.find_one_or_none({'email': user_data.email})
+    if existing_user:
+        raise UserAlreadyExistsExceptions
+
+    hashed_password = get_password_hash(user_data.password)
+    await UsersDao.add(ModelUser(
+        name = user_data.name,
+        email=user_data.email,
+        password=hashed_password,
+    ))
+
+
+@router.post("/login")
+async def login_user(response: Response, user_data: UserCreate):
+    user = await auth_user(user_data.email, user_data.password)
+    if not user:
+        raise IncorrectEmailOrPasswordException
+    refresh_token = create_refresh_token({"sub":str(user.id)})
+    response.set_cookie("token", value=refresh_token, httponly=True,secure=True, samesite="strict")
+
+    access_token = create_access_token({"sub":str(user.id)})
+    return access_token
+
+@router.get("/login/google")
+async def login_via_google(request: Request):
+    redirect_uri = request.url_for('auth_via_google')
+    print(redirect_uri)
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+@router.get("/auth/google")
+async def auth_via_google(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+    user = token['userinfo']
+    return user
+
+
+# @router.post("/token")
+# async def login_for_access_token(
+#     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+# )-> Token:
 #
-#     hashed_password = get_password_hash(user_data.password)
-#     await UsersDao.add_item(SUser(
-#         name = user_data.name,
-#         email=user_data.email,
-#         password_hash=hashed_password,
-#     ))
+#     user = await auth_user(form_data.username, form_data.password)
+#
+#     if not user:
+#         raise IncorrectEmailOrPasswordException
+#     access_token = create_access_token({"sub":str(user.id)})
+#
+#
+#     return Token(access_token=access_token, token_type="bearer")
+#
+# @router.get("/users/me/")
+# async def read_users_me(
+#     current_user: Annotated[UserRead, Depends(get_current_active_user)],
+# ):
+#
+#     return current_user
