@@ -28,11 +28,32 @@ IncorrectTokenFormaException  = HTTPException(
 
 UserIsNotPresentHTTPException = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-
 )
 
 
 InactiveUserException = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail = 'Inactive user',
+)
+
+FailedToCreateMapException = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail = 'Не удалось создать карту'
+)
+
+FailedToCreatePiggyException = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail = 'Не удалось создать копилку'
+)
+
+
+
+CardAlreadyExistsException = HTTPException(
+    status_code=status.HTTP_409_CONFLICT,
+    detail= "Карта уже существует"
+)
+
+PiggyCardAlreadyExistsException = HTTPException(
+    status_code=status.HTTP_409_CONFLICT,
+    detail= "Копилка уже существует"
 )

@@ -1,11 +1,10 @@
-from app.users.dao import UsersDao,ModelUser
+from app.users.models import UsersDao, ModelUser
 
 
-
-async def test_add_item():
+async def test_add_item(db_client):
     new_user = await UsersDao.add(ModelUser(
         name='user',
-        email='test@test.com',
+        email='tests@tests.com',
         password='1234'
     ))
     assert new_user.name == 'user'
@@ -22,5 +21,5 @@ async def test_add_item():
     assert new_request.name == 'user'
 
     new_request = await UsersDao.find_all({'name': new_user.name})
-    print(new_request)
+
     assert new_request is not None

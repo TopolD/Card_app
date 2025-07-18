@@ -4,15 +4,10 @@ from jose import jwt
 from passlib.context import CryptContext
 
 from app.config import settings
-from app.users.dao import UsersDao
-
-
-
+from app.users.models import UsersDao
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
 
 
 def get_password_hash(password: str) -> str:
@@ -44,8 +39,8 @@ def create_refresh_token(data: dict) -> str:
     return create_token(data, settings.SECRET_KEY_REFRESH, timedelta(days=settings.REFRESH_TOKEN_EXPIRATION))
 
 
-async def auth_user(email, password: str):
-    user = await UsersDao.find_one_or_none({'email': email})
+async def auth_user(phone_number, password: str):
+    user = await UsersDao.find_one_or_none({'phone_number': phone_number})
     if not user or not verify_password(password, user.password):
         return None
     return user

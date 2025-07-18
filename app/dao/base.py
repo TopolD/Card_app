@@ -1,5 +1,5 @@
-from typing import Union
 
+from typing import Union
 from bson import ObjectId
 
 
@@ -19,13 +19,13 @@ class BaseDao:
         try:
             if param is None:
                 return None
-            result =   cls.model.find(param)
+            result = cls.model.find(param)
             return result
         except Exception as e:
             print(e)
 
     @classmethod
-    async def find_by_id(cls,id_: Union[str, ObjectId]):
+    async def find_by_id(cls, id_: Union[str, ObjectId]):
         try:
             result = await cls.model.get(id_)
             return result
@@ -38,7 +38,7 @@ class BaseDao:
             if not param:
                 return None
             result = await cls.model.find(param).first_or_none()
-            return  result
+            return result
         except Exception as e:
             print(e)
 

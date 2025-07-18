@@ -1,43 +1,65 @@
 import asyncio
 
 import pytest
+import pytest_asyncio
 from beanie import init_beanie
+from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import AsyncMongoClient
 
+
+from app.card.models import ModelCard
 from app.config import settings
 
 from app.main import app as fastapi_app
 
 from httpx import AsyncClient, ASGITransport
 
-from app.users.dao import ModelUser
+
+from app.users.models import ModelUser
 
 
-@pytest.fixture()
+
+@pytest_asyncio.fixture(loop_scope="function",autouse=True)
+async def db_client(event_loop):
+    """
+        Используется Motor для подключения в базе данных, но
+        в 2026 поддержка Motor отключится по этому дальнейше использовать Pymongo
+    :param event_loop:
+    :return:
+    """
+    client = AsyncIOMotorClient(settings.MONGODB_URI_TESTS)
+
+    await init_beanie(
+        database=client[settings.MONGODB_DATABASE_TESTS],
+        document_models=[ModelUser,ModelCard]
+    )
+
+    yield client
+    # await client.drop_database(settings.MONGODB_DATABASE_TESTS)
+    client.close()
+
+
+@pytest.fixture(scope="session")
 def event_loop():
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()
 
 
-
-@pytest.fixture( autouse=True)
-async def client(event_loop):
-    client = AsyncMongoClient(settings.MONGODB_URI_TESTS)
-
-    await init_beanie(
-        database=client[settings.MONGODB_DATABASE_TESTS],
-        document_models=[ModelUser]
-    )
-
-
-    yield client
-
-
-    await client.close()
-
-
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(loop_scope="function")
 async def ac():
     async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
+        yield ac
+
+@pytest_asyncio.fixture(loop_scope="function")
+async def authenticated_ac() :
+    async with AsyncClient(transport=ASGITransport(app=fastapi_app),base_url="http://test") as ac:
+        response = await ac.post("/auth/login", json={
+            "phone_number":"+380986419381",
+            "password":"user",
+        })
+        token = response.cookies.get("token")
+        assert token
+
+        ac.cookies.set("token",token)
         yield ac
