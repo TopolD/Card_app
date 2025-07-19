@@ -5,9 +5,7 @@ import uvicorn
 from beanie import init_beanie
 from fastapi import FastAPI
 from pymongo import AsyncMongoClient
-from starlette.middleware.sessions import SessionMiddleware
-
-
+from pymongo.server_api import ServerApi
 
 from app.card.models import   ModelCard
 from app.config import settings
@@ -18,9 +16,9 @@ from app.users.models import ModelUser
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    client = AsyncMongoClient(settings.MONGODB_URI)
+    client = AsyncMongoClient(f"{settings.MONGODB_URL}.{settings.MONGODB_NAME}",server_api=ServerApi('1'))
     await init_beanie(
-        database=client[f"{settings.MONGODB_DATABASE}"],
+        database=client[f"{settings.MONGODB_NAME}"],
         document_models=[ModelUser,ModelCard]
     )
     try:

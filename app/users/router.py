@@ -1,7 +1,7 @@
-from typing import Annotated
 
-from fastapi import APIRouter, Response, Depends, Request
-from fastapi.security import OAuth2PasswordRequestForm
+
+from fastapi import APIRouter, Response,  Request
+
 
 from app.exceptions import UserAlreadyExistsExceptions, IncorrectEmailOrPasswordException
 from app.users.aouth_google import oauth

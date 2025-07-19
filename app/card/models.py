@@ -1,18 +1,22 @@
 from typing import Optional
-
+from datetime import date
 from beanie import Document, Link
+from pydantic import BaseModel
 
-from app.card.schemas import CardSchema
 from app.dao.base import BaseDao
 from app.users.models import ModelUser
 
 
+class Transaction(BaseModel):
+    name: str
+    value: int
+    date: date
 
 
 class ModelCard(Document):
     name: str
     value: Optional[int] = None
-    history_transaction: Optional[list[dict]] = None
+    history_transaction: Optional[Transaction] = None
     user_id: Link[ModelUser]
 
     class Settings:
@@ -21,5 +25,3 @@ class ModelCard(Document):
 
 class CardDao(BaseDao):
     model = ModelCard
-
-
