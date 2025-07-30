@@ -3,23 +3,17 @@ import asyncio
 import pytest
 import pytest_asyncio
 from beanie import init_beanie
+from httpx import ASGITransport, AsyncClient
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import AsyncMongoClient
 
-
 from app.card.models import ModelCard
 from app.config import settings
-
 from app.main import app as fastapi_app
-
-from httpx import AsyncClient, ASGITransport
-
-
 from app.users.models import ModelUser
 
 
-
-@pytest_asyncio.fixture(loop_scope="function",autouse=True)
+@pytest_asyncio.fixture(loop_scope="function", autouse=True)
 async def db_client(event_loop):
     """
         Используется Motor для подключения в базе данных, но
@@ -31,7 +25,7 @@ async def db_client(event_loop):
 
     await init_beanie(
         database=client[settings.MONGODB_DATABASE_TESTS],
-        document_models=[ModelUser,ModelCard]
+        document_models=[ModelUser, ModelCard],
     )
 
     yield client
@@ -48,18 +42,26 @@ def event_loop():
 
 @pytest_asyncio.fixture(loop_scope="function")
 async def ac():
-    async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
+    async with AsyncClient(
+        transport=ASGITransport(app=fastapi_app), base_url="http://test"
+    ) as ac:
         yield ac
 
+
 @pytest_asyncio.fixture(loop_scope="function")
-async def authenticated_ac() :
-    async with AsyncClient(transport=ASGITransport(app=fastapi_app),base_url="http://test") as ac:
-        response = await ac.post("/auth/login", json={
-            "phone_number":"+380986419381",
-            "password":"user",
-        })
+async def authenticated_ac():
+    async with AsyncClient(
+        transport=ASGITransport(app=fastapi_app), base_url="http://test"
+    ) as ac:
+        response = await ac.post(
+            "/auth/login",
+            json={
+                "phone_number": "+380986419381",
+                "password": "user",
+            },
+        )
         token = response.cookies.get("token")
         assert token
 
-        ac.cookies.set("token",token)
+        ac.cookies.set("token", token)
         yield ac

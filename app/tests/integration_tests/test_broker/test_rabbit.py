@@ -1,16 +1,12 @@
 import pytest
-
-from faststream.rabbit import TestRabbitBroker,fastapi
-
-
-
+from faststream.rabbit import TestRabbitBroker, fastapi
 
 router = fastapi.RabbitRouter()
 
 
 @router.subscriber("test")
-async def handler(msg:str):
-    ...
+async def handler(msg: str): ...
+
 
 @pytest.mark.asyncio
 async def test_router():

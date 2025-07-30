@@ -5,7 +5,7 @@ ve:
 	pip install -r requirements.txt
 
 test:
-	export MODE=TEST python -m pytest -v ./tests
+	export MODE=TEST python -m pytest -v ./app/tests
 
 lint:
 	flake8 conduit
@@ -13,6 +13,8 @@ lint:
 	black conduit --check
 	mypy --namespace-packages -p "conduit" --config-file setup.cfg
 
+types:
+	mypy --namespace-packages -p "conduit" --config-file setup.cfg
 
 docker_build:
 	docker-compose up -d --build

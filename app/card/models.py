@@ -1,5 +1,6 @@
-from typing import Optional
 from datetime import date
+from typing import Optional
+
 from beanie import Document, Link
 from pydantic import BaseModel
 
@@ -15,8 +16,8 @@ class Transaction(BaseModel):
 
 class ModelCard(Document):
     name: str
-    value: Optional[int] = None
-    history_transaction: Optional[Transaction] = None
+    value: int | None = None
+    history_transaction: Transaction | None = None
     user_id: Link[ModelUser]
 
     class Settings:

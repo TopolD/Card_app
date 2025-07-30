@@ -9,8 +9,8 @@ from app.card.models import Transaction
 
 class CardSchema(BaseModel):
     name: str
-    value:int
-    history_transaction:Optional[List[Transaction]] = None
+    value: int
+    history_transaction: list[Transaction] | None = None
 
     @property
     def brand(self) -> PaymentCardBrand:
