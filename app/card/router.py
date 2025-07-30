@@ -19,7 +19,6 @@ router = APIRouter(
 @router.get("")
 async def get_card(user: Annotated[UserRead, Depends(get_current_user)]):
     card_obj = await CardDao.find_one_or_none({'user_id':user.id})
-
     return card_obj
 
 

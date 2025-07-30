@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    volumes:
+      - mongodata:/var/lib/mongodb/data
+    env_file:
+      - .env
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+    env_file:
+      - .env
+  card:
+    build:
+      context: .
+    container_name: card_app
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+    command:
+      sh -c "gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000"
+
+
+
+volumes:
+  mongodata:

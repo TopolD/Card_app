@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from jose import jwt, JWTError
 
+
 from app.config import settings
 from app.exceptions import TokenExpiredException, TokeAbsentException, IncorrectTokenFormaException, \
     UserIsNotPresentHTTPException, InactiveUserException
@@ -30,7 +31,7 @@ async def current_user(token) :
 
     try:
         payload = jwt.decode(token, settings.SECRET_KEY_REFRESH, algorithms=settings.ALGORITHM)
-    except JWTError:
+    except (JWTError) as e :
         raise IncorrectTokenFormaException
     expire: str = payload.get('exp')
     if (not expire) or (int(expire) < datetime.now(timezone.utc).timestamp()):

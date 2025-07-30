@@ -4,6 +4,7 @@ from jose import jwt
 from passlib.context import CryptContext
 
 from app.config import settings
+from app.logger import log
 from app.users.models import UsersDao
 
 
@@ -27,8 +28,8 @@ def create_token(data: dict, secret_key: str, expiration_time: timedelta) -> str
             to_encode, secret_key, algorithm=settings.ALGORITHM
         )
         return encoded_jwt
-    except Exception as e:
-        print(e)
+    except (TypeError, ValueError) as e:
+        log.error(f"Ошибка создания токена: {e}", exc_info=True)
 
 
 def create_access_token(data: dict) -> str:

@@ -1,3 +1,7 @@
+from pydantic import ValidationError
+from pymongo.errors import PyMongoError
+
+from app.logger import log
 
 from fastapi import HTTPException,status
 
@@ -23,7 +27,7 @@ TokeAbsentException = HTTPException(
 
 IncorrectTokenFormaException  = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Неверный формат токена",
+    detail="Неверный формат токена ",
 )
 
 UserIsNotPresentHTTPException = HTTPException(
@@ -57,3 +61,15 @@ PiggyCardAlreadyExistsException = HTTPException(
     status_code=status.HTTP_409_CONFLICT,
     detail= "Копилка уже существует"
 )
+
+
+
+async def ExceptionDatabase(e, name):
+    if isinstance(e, ValidationError):
+        msg = f"Validation Error for Database {name}"
+    elif isinstance(e, PyMongoError):
+        msg = f"Mongo Error for Database in {name}"
+    else:
+        msg = f"Exception for Database in {name}"
+    log.error(msg, exc_info=True)
+

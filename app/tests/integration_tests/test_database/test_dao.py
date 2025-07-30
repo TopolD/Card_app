@@ -4,7 +4,7 @@ from app.users.models import UsersDao, ModelUser
 async def test_add_item(db_client):
     new_user = await UsersDao.add(ModelUser(
         name='user',
-        email='tests@tests.com',
+        phone_number='+1 234 567',
         password='1234'
     ))
     assert new_user.name == 'user'

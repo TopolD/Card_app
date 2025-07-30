@@ -1,6 +1,11 @@
 from typing import Union
 from bson import ObjectId
 
+from pydantic import ValidationError
+from pymongo.errors import PyMongoError
+
+from app.exceptions import ExceptionDatabase
+
 
 class BaseDao:
     model = None
@@ -10,9 +15,8 @@ class BaseDao:
         try:
             result = await cls.model.insert(item)
             return result
-        except Exception as e:
-            print(e)
-
+        except (ValidationError, PyMongoError) as e:
+            await ExceptionDatabase(e,name='add')
     @classmethod
     async def find_all(cls, param):
         try:
@@ -20,16 +24,16 @@ class BaseDao:
                 return None
             result = cls.model.find(param)
             return result
-        except Exception as e:
-            print(e)
+        except (ValidationError, PyMongoError) as e:
+            await ExceptionDatabase(e,name='find_all')
 
     @classmethod
     async def find_by_id(cls, id_: Union[str, ObjectId]):
         try:
             result = await cls.model.get(id_)
             return result
-        except  Exception as e:
-            print(e)
+        except (ValidationError, PyMongoError) as e:
+            await ExceptionDatabase(e,name='find_by_id')
 
     @classmethod
     async def find_one_or_none(cls, param):
@@ -38,13 +42,13 @@ class BaseDao:
                 return None
             result = await cls.model.find(param).first_or_none()
             return result
-        except Exception as e:
-            print(e)
+        except (ValidationError, PyMongoError) as e:
+            await ExceptionDatabase(e,name='find_one_or_none')
 
     @classmethod
     async def delete_item(cls, item):
         try:
             await cls.model.delete(item)
             return None
-        except Exception as e:
-            print(e)
+        except (ValidationError, PyMongoError) as e:
+            await ExceptionDatabase(e,name='delete_item')
