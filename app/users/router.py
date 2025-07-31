@@ -65,23 +65,3 @@ async def auth_via_google(request: Request):
     return user
 
 
-# @router.post("/token")
-# async def login_for_access_token(
-#     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
-# )-> Token:
-#
-#     user = await auth_user(form_data.username, form_data.password)
-#
-#     if not user:
-#         raise IncorrectEmailOrPasswordException
-#     access_token = create_access_token({"sub":str(user.id)})
-#
-#
-#     return Token(access_token=access_token, token_type="bearer")
-#
-# @router.get("/users/me/")
-# async def read_users_me(
-#     current_user: Annotated[UserRead, Depends(get_current_active_user)],
-# ):
-#
-#     return current_user

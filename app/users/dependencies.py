@@ -42,16 +42,6 @@ async def current_user(token):
     return user
 
 
-# async def get_current_active_user(
-#     user: Annotated[UserBase, Depends(current_user)],
-# ):
-#
-#     if not user:
-#         raise InactiveUserException
-#     return user
-#
-# async def get_current_user_oauth(token: Annotated[str, Depends(oauth2_scheme)]):
-#     return await current_user(token)
 
 
 async def get_current_user(token: Annotated[str, Depends(get_token)]) -> ModelUser:
