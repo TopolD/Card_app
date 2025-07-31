@@ -29,6 +29,8 @@ class BaseDao:
     @classmethod
     async def find_by_id(cls, id_: str | ObjectId):
         try:
+            if id_ is None:
+                return None
             result = await cls.model.get(id_)
             return result
         except (ValidationError, PyMongoError) as e:
