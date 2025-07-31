@@ -2,19 +2,16 @@ from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import Depends, Request
-from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
 from app.config import settings
 from app.exceptions import (
-    InactiveUserException,
     IncorrectTokenFormaException,
     TokeAbsentException,
     TokenExpiredException,
     UserIsNotPresentHTTPException,
 )
 from app.users.models import ModelUser, UsersDao
-from app.users.schemas import UserBase
 
 
 def get_token(request: Request) -> str:

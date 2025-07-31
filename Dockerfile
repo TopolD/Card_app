@@ -1,7 +1,5 @@
 FROM python:latest
 
-RUN mkdir /card
-
 WORKDIR /card
 
 COPY requirements.txt .

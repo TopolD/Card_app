@@ -1,5 +1,4 @@
 from beanie import Document
-from pydantic import EmailStr
 
 from app.dao.base import BaseDao
 

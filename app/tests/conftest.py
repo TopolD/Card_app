@@ -5,7 +5,6 @@ import pytest_asyncio
 from beanie import init_beanie
 from httpx import ASGITransport, AsyncClient
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import AsyncMongoClient
 
 from app.card.models import ModelCard
 from app.config import settings

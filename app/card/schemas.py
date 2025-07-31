@@ -1,8 +1,7 @@
 from datetime import date
-from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict, constr
-from pydantic_extra_types.payment import PaymentCardBrand, PaymentCardNumber
+from pydantic import BaseModel, ConfigDict
+from pydantic_extra_types.payment import PaymentCardBrand
 
 from app.card.models import Transaction
 

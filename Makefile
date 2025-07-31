@@ -13,8 +13,7 @@ lint:
 	black conduit --check
 	mypy --namespace-packages -p "conduit" --config-file setup.cfg
 
-types:
-	mypy --namespace-packages -p "conduit" --config-file setup.cfg
+
 
 docker_build:
 	docker-compose up -d --build

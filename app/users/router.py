@@ -14,7 +14,7 @@ from app.users.auth import (
 from app.users.models import ModelUser, UsersDao
 
 # from app.users.dependencies import get_current_active_user
-from app.users.schemas import UserBase, UserCreate, UserLogin, UserRead
+from app.users.schemas import UserCreate, UserLogin
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 

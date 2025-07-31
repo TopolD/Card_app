@@ -1,5 +1,3 @@
-from typing import Union
-
 from bson import ObjectId
 from pydantic import ValidationError
 from pymongo.errors import PyMongoError
