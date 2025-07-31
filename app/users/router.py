@@ -63,5 +63,3 @@ async def auth_via_google(request: Request):
     token = await oauth.google.authorize_access_token(request)
     user = token["userinfo"]
     return user
-
-
