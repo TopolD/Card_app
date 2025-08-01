@@ -28,3 +28,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+
+      - name: Create dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Test Confirm
+        run: make test
+
+      - name: Style checking
+        run: make lint

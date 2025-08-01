@@ -10,6 +10,12 @@ class BaseDao:
 
     @classmethod
     async def add(cls, item):
+        """
+            add an item to the database
+        :param item:
+        :return:result
+        """
+
         try:
             result = await cls.model.insert(item)
             return result

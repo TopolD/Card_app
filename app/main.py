@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
         log.error("PyMongo error", exc_info=True)
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 
 app.add_middleware(SessionMiddleware, secret_key=f"{settings.SECRET_KEY}")

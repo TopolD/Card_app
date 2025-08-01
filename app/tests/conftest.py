@@ -15,12 +15,12 @@ from app.users.models import ModelUser
 @pytest_asyncio.fixture(loop_scope="function", autouse=True)
 async def db_client(event_loop):
     """
-        Используется Motor для подключения в базе данных, но
-        в 2026 поддержка Motor отключится по этому дальнейше использовать Pymongo
+        create conn in database
     :param event_loop:
     :return:
     """
     client = AsyncIOMotorClient(settings.MONGODB_URI_TESTS)
+    assert client
 
     await init_beanie(
         database=client[settings.MONGODB_DATABASE_TESTS],
@@ -28,7 +28,9 @@ async def db_client(event_loop):
     )
 
     yield client
-    # await client.drop_database(settings.MONGODB_DATABASE_TESTS)
+
+    await client.drop_database(settings.MONGODB_DATABASE_TESTS)
+
     client.close()
 
 
