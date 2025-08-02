@@ -10,6 +10,7 @@ test:
 	python -m pytest -v ./app/tests
 
 lint:
+	. .ve/bin/activate; \
 	flake8 conduit
 	isort conduit --diff
 	black conduit --check
