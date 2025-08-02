@@ -21,8 +21,8 @@ class Settings(BaseSettings):
     SECRET_KEY_REFRESH: str
     ALGORITHM: str
 
-    ACCESS_TIME_TOKEN: int
-    REFRESH_TOKEN_EXPIRATION: int
+    ACCESS_TIME_TOKEN: str
+    REFRESH_TOKEN_EXPIRATION: str
 
     model_config = SettingsConfigDict(env_file=".env")
 
