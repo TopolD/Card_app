@@ -6,6 +6,7 @@ ve:
 test:
 	docker run -d -p 27017:27017 mongo
 	export MODE=TEST
+	pip install pytest
 	python -m pytest -v ./app/tests
 
 lint:
