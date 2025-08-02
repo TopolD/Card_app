@@ -4,6 +4,7 @@ ve:
 	pip install -r requirements.txt
 
 test:
+	docker run -d -p 27017:27017 mongo
 	export MODE=TEST python -m pytest -v ./app/tests
 
 lint:
