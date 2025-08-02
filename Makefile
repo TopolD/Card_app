@@ -1,4 +1,7 @@
-
+ve:
+	python3 -m venv .ve; \
+	. .ve/bin/activate; \
+	pip install -r requirements.txt
 
 test:
 	export MODE=TEST python -m pytest -v ./app/tests

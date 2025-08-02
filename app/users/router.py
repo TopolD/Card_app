@@ -35,7 +35,6 @@ async def register_user(user_data: UserCreate):
         )
     )
 
-
 @router.post("/login")
 async def login_user(response: Response, user_data: UserLogin):
     user = await auth_user(user_data.phone_number, user_data.password)
