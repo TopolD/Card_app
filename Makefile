@@ -5,7 +5,8 @@ ve:
 
 test:
 	docker run -d -p 27017:27017 mongo
-	export MODE=TEST python -m pytest -v ./app/tests
+	export MODE=TEST
+	python -m pytest -v ./app/tests
 
 lint:
 	flake8 conduit
