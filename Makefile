@@ -4,8 +4,6 @@ ve:
 	pip install -r requirements.txt
 
 
-docker_build_mongodb:
-	docker run -d --name db -p 27017:27017 mongo
 
 
 docker_build:
