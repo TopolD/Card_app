@@ -53,6 +53,7 @@ jobs:
           REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
 
         run: |
+          make docker_build_mongodb
           make tests
 
       - name: build_container

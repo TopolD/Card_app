@@ -5,8 +5,8 @@ ve:
 
 
 docker_build_mongodb:
-	docker run -d --name mongo \
-	mongo
+	docker run -d --name mongo mongo
+
 
 docker_build:
 	docker-compose up -d --build
