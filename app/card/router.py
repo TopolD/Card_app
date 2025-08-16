@@ -36,4 +36,4 @@ async def add_card(
 
 @router.delete("/del")
 async def delete_card(user: Annotated[UserRead, Depends(get_current_user)]):
-    card_obj = await CardDao.delete_item({"user_id": user.id})
+    await CardDao.delete_item({"user_id": user.id})
