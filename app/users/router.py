@@ -1,16 +1,10 @@
 from fastapi import APIRouter, Request, Response
 
-from app.exceptions import (
-    IncorrectEmailOrPasswordException,
-    UserAlreadyExistsExceptions,
-)
+from app.exceptions import (IncorrectEmailOrPasswordException,
+                            UserAlreadyExistsExceptions)
 from app.users.aouth_google import oauth
-from app.users.auth import (
-    auth_user,
-    create_access_token,
-    create_refresh_token,
-    get_password_hash,
-)
+from app.users.auth import (auth_user, create_access_token,
+                            create_refresh_token, get_password_hash)
 from app.users.models import ModelUser, UsersDao
 from app.users.schemas import UserCreate, UserLogin
 
@@ -34,6 +28,7 @@ async def register_user(user_data: UserCreate):
             password=hashed_password,
         )
     )
+
 
 @router.post("/login")
 async def login_user(response: Response, user_data: UserLogin):

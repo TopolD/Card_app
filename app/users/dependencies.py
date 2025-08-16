@@ -5,12 +5,9 @@ from fastapi import Depends, Request
 from jose import JWTError, jwt
 
 from app.config import settings
-from app.exceptions import (
-    IncorrectTokenFormaException,
-    TokeAbsentException,
-    TokenExpiredException,
-    UserIsNotPresentHTTPException,
-)
+from app.exceptions import (IncorrectTokenFormaException, TokeAbsentException,
+                            TokenExpiredException,
+                            UserIsNotPresentHTTPException)
 from app.users.models import ModelUser, UsersDao
 
 
