@@ -5,7 +5,7 @@ ve:
 
 
 docker_build_mongodb:
-	docker run -d --name mongo mongo
+	docker run -d --name db -p 27017:27017mongo
 
 
 docker_build:
