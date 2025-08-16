@@ -19,6 +19,6 @@ tests:
 
 
 lint:
-	flake8 conduit
-	isort conduit --diff
-	black conduit --check
+	flake8 app
+	isort app --diff
+	black app --check
