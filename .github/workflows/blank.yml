@@ -37,7 +37,23 @@ jobs:
         run: make lint
 
       - name: Testing
-        run: make tests
+        env:
+          MODE: ${{secrets.MODE}}
+          MONGODB_URI_TESTS: ${{ secrets.MONGODB_URI_TESTS }}
+          MONGODB_DATABASE_TESTS: ${{ secrets.MONGODB_DATABASE_TESTS }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          MONGODB_NAME: ${{ secrets.MONGODB_NAME }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          CLIENT_GOOGLE_ID: ${{ secrets.CLIENT_GOOGLE_ID }}
+          CLIENT_SECRET_KEY: ${{ secrets.CLIENT_SECRET_KEY }}
+          SECRET_KEY_ACCESS: ${{ secrets.SECRET_KEY_ACCESS }}
+          SECRET_KEY_REFRESH: ${{ secrets.SECRET_KEY_REFRESH }}
+          ALGORITHM: ${{ secrets.ALGORITHM }}
+          ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
+          REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
+
+        run: |
+          make tests
 
       - name: build_container
         run: make docker_build
