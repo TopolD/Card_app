@@ -3,10 +3,7 @@ from httpx import AsyncClient
 
 
 @pytest.mark.parametrize(
-    "name,phone_number,password,status_code",
-    [
-        ("user", "+380986419381", "user", 200),
-    ],
+    "name,phone_number,password,status_code", [("user", "+380986419381", "user", 200)]
 )
 async def test_register_user(
     name, phone_number, password, status_code, ac: AsyncClient
@@ -20,10 +17,7 @@ async def test_register_user(
 
 
 @pytest.mark.parametrize(
-    "name,phone_number,password,status_code",
-    [
-        ("user", "+380986419381", "user", 200),
-    ],
+    "name,phone_number,password,status_code", [("user", "+380986419381", "user", 200)]
 )
 async def test_login_user(name, phone_number, password, status_code, ac: AsyncClient):
     new_user = await ac.post(

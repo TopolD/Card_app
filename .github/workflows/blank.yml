@@ -33,3 +33,12 @@ jobs:
 
       - name: Style checking
         run: make lint
+
+      - name: Testing
+        run:
+
+      - name: build_container
+        run: make docker_build
+
+      - name: container_down
+        run: docker_down

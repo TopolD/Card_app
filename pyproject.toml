@@ -25,4 +25,4 @@ force_grid_wrap = 0
 ensure_newline_before_comments = true
 use_parentheses = true
 skip_gitignore = true
-skip_glob = ['.ve', '.git']pre
+skip_glob = ['.ve', '.git']

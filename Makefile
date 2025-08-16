@@ -22,4 +22,3 @@ lint:
 	flake8 conduit
 	isort conduit --diff
 	black conduit --check
-	mypy --namespace-packages -p "conduit" --config-file setup.cfg

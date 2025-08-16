@@ -55,11 +55,7 @@ async def authenticated_ac():
         transport=ASGITransport(app=fastapi_app), base_url="http://test"
     ) as ac:
         response = await ac.post(
-            "/auth/login",
-            json={
-                "phone_number": "+380986419381",
-                "password": "user",
-            },
+            "/auth/login", json={"phone_number": "+380986419381", "password": "user"}
         )
         token = response.cookies.get("token")
         assert token
