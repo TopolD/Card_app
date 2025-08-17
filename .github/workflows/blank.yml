@@ -113,12 +113,12 @@ jobs:
         #     ALGORITHM: ${{ secrets.ALGORITHM }}
         #     ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
         #     REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
-            
+              
         - name: Show Mongo URI
           run: |
-            echo "MONGO URI: $MONGODB_URI_TESTS"
+            echo "MONGO URI: $SECRET_ENV"
           env:
-            MONGODB_URI_TESTS: ${{ secrets.MONGODB_URI_TESTS }}
+            SECRET_ENV: ${{ secrets.SECRET_ENV }}
         
 
         
