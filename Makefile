@@ -4,8 +4,6 @@ ve:
 	pip install -r requirements.txt
 
 
-
-
 docker_build:
 	docker-compose up -d --build
 
@@ -14,7 +12,6 @@ docker_down:
 
 tests:
 	export MODE=test && python -m pytest -v
-
 
 lint:
 	flake8 app
