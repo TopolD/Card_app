@@ -24,7 +24,7 @@ jobs:
       - name: Initialize python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.12'
           
       - name: install Deps
         run: |
@@ -72,9 +72,7 @@ jobs:
               db.createUser({ user: 'APP-USERNAME', pwd: 'APP-PASSWORD', roles: [{ role: 'readWrite', db: 'APP-DB' }] })
               db.createCollection('APP-COLLECTION');
             EOF
-            
-        - name: Create Venv
-          run: make ve
+            \
           
         - name: Testing
           env:
@@ -91,8 +89,11 @@ jobs:
             ALGORITHM: ${{ secrets.ALGORITHM }}
             ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
             REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
-            
-          run: make tests
+            run: |
+              make ve
+              source .ve/bin/activate
+              make tests
+      
 
         
   build:
