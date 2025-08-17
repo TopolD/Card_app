@@ -89,9 +89,8 @@ jobs:
             ALGORITHM: ${{ secrets.ALGORITHM }}
             ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
             REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
-  
-          run: |
-            make tests
+            
+          run: make tests
 
         
   build:
