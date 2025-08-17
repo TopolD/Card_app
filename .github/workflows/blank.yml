@@ -70,11 +70,9 @@ jobs:
               db.createUser({ user: 'APP-USERNAME', pwd: 'APP-PASSWORD', roles: [{ role: 'readWrite', db: 'APP-DB' }] })
               db.createCollection('APP-COLLECTION');
             EOF
-            # Do whatever you like in here
             
 
-
-        - name: create env
+        - name: Testing
           env:
             MODE: ${{secrets.MODE}}
             MONGODB_URI_TESTS: ${{ secrets.MONGODB_URI_TESTS }}
@@ -90,7 +88,6 @@ jobs:
             ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
             REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
   
-        - name: Testing
           run: |
             make tests
 
