@@ -14,58 +14,93 @@ on:
 
 
 jobs:
-  build:
-
+  
+  lint:
     runs-on: ubuntu-latest
-    services:
-      mongo:
-        image: mongo:6.0
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
 
       - uses: actions/checkout@v4
-
-
+      
       - name: Initialize python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-
-      - name: Create dependencies
-        run:  |
-          python -m pip install --upgrade pip
-          pip install -r  requirements.txt
-
+          
       - name: Style checking
         run: make lint
 
-      - name: Testing
+    
+  test:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:4.4.6
         env:
-          MODE: ${{secrets.MODE}}
-          MONGODB_URI_TESTS: ${{ secrets.MONGODB_URI_TESTS }}
-          MONGODB_DATABASE_TESTS: ${{ secrets.MONGODB_DATABASE_TESTS }}
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
-          MONGODB_NAME: ${{ secrets.MONGODB_NAME }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          CLIENT_GOOGLE_ID: ${{ secrets.CLIENT_GOOGLE_ID }}
-          CLIENT_SECRET_KEY: ${{ secrets.CLIENT_SECRET_KEY }}
-          SECRET_KEY_ACCESS: ${{ secrets.SECRET_KEY_ACCESS }}
-          SECRET_KEY_REFRESH: ${{ secrets.SECRET_KEY_REFRESH }}
-          ALGORITHM: ${{ secrets.ALGORITHM }}
-          ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
-          REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: admin
+          MONGO_INITDB_DATABASE: TestPetProjectDatabase
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-        run: |
-          make tests
+    steps:
+        - name: install Deps
+          run:
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+        - name: Install mongosh
+          run: |
+            sudo apt-get install gnupg
+            wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
+            echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-mongosh
+            mongosh --version
 
+        - name: Initalize MongoDB
+          run: |
+            mongosh --host localhost:27017 -u admin -p admin --authenticationDatabase admin <<EOF
+              db = db.getSiblingDB('APP-DB');
+              db.createUser({ user: 'APP-USERNAME', pwd: 'APP-PASSWORD', roles: [{ role: 'readWrite', db: 'APP-DB' }] })
+              db.createCollection('APP-COLLECTION');
+            EOF
+            # Do whatever you like in here
+            
+
+
+        - name: create env
+          env:
+            MODE: ${{secrets.MODE}}
+            MONGODB_URI_TESTS: ${{ secrets.MONGODB_URI_TESTS }}
+            MONGODB_DATABASE_TESTS: ${{ secrets.MONGODB_DATABASE_TESTS }}
+            MONGODB_URL: ${{ secrets.MONGODB_URL }}
+            MONGODB_NAME: ${{ secrets.MONGODB_NAME }}
+            SECRET_KEY: ${{ secrets.SECRET_KEY }}
+            CLIENT_GOOGLE_ID: ${{ secrets.CLIENT_GOOGLE_ID }}
+            CLIENT_SECRET_KEY: ${{ secrets.CLIENT_SECRET_KEY }}
+            SECRET_KEY_ACCESS: ${{ secrets.SECRET_KEY_ACCESS }}
+            SECRET_KEY_REFRESH: ${{ secrets.SECRET_KEY_REFRESH }}
+            ALGORITHM: ${{ secrets.ALGORITHM }}
+            ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
+            REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
+  
+        - name: Testing
+          run: |
+            make tests
+
+        
+  build:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
       - name: build_container
         run: make docker_build
-
+  
       - name: container_down
         run: docker_down
