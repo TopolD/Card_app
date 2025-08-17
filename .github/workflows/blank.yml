@@ -48,8 +48,6 @@ jobs:
       mongodb:
         image: mongo:4.4.6
         env:
-          MONGO_INITDB_ROOT_USERNAME: admin
-          MONGO_INITDB_ROOT_PASSWORD: admin
           MONGO_INITDB_DATABASE: TestPetProjectDatabase
         ports:
           - 27017:27017
@@ -73,11 +71,11 @@ jobs:
 
         - name: Initalize MongoDB
           run: |
-            mongosh --host localhost:27017 -u admin -p admin --authenticationDatabase admin <<EOF
+            mongosh --host localhost:27017
               db = db.getSiblingDB('APP-DB');
               db.createUser({ user: 'APP-USERNAME', pwd: 'APP-PASSWORD', roles: [{ role: 'readWrite', db: 'APP-DB' }] })
               db.createCollection('APP-COLLECTION');
-            EOF
+          
             
         - name: Initialize python 3.12
           uses: actions/setup-python@v5
@@ -108,8 +106,11 @@ jobs:
         
   build:
     needs: [test]
+  
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      
       - name: build_container
         run: make docker_build
   
