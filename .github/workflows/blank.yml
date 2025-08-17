@@ -114,7 +114,6 @@ jobs:
             ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
             REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
           run: |
-            make ve
             make tests
         
 
