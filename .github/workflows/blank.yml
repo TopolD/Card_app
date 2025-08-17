@@ -91,35 +91,19 @@ jobs:
             key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
             restore-keys: |
               ${{ runner.os }}-pip- 
-
+        - name: Create .env file
+          run: |
+            echo "${{ secrets.SECRET_ENV }}" > .env
+            
         - name: install Deps
           run: |
             python -m pip install --upgrade pip
             pip install -r requirements.txt
           
-        # - name: Testing
+        - name: Testing
+          run: make tests
+  
 
-        #   env:
-        #     MODE: ${{secrets.MODE}}
-        #     MONGODB_URI_TESTS: ${{ secrets.MONGODB_URI_TESTS }}
-        #     MONGODB_DATABASE_TESTS: ${{ secrets.MONGODB_DATABASE_TESTS }}
-        #     MONGODB_URL: ${{ secrets.MONGODB_URL }}
-        #     MONGODB_NAME: ${{ secrets.MONGODB_NAME }}
-        #     SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        #     CLIENT_GOOGLE_ID: ${{ secrets.CLIENT_GOOGLE_ID }}
-        #     CLIENT_SECRET_KEY: ${{ secrets.CLIENT_SECRET_KEY }}
-        #     SECRET_KEY_ACCESS: ${{ secrets.SECRET_KEY_ACCESS }}
-        #     SECRET_KEY_REFRESH: ${{ secrets.SECRET_KEY_REFRESH }}
-        #     ALGORITHM: ${{ secrets.ALGORITHM }}
-        #     ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
-        #     REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
-              
-        - name: Show Mongo URI
-          run: |
-            echo "MONGO URI: $SECRET_ENV"
-          env:
-            SECRET_ENV: ${{ secrets.SECRET_ENV }}
-        
 
         
   build:
