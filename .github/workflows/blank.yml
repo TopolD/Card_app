@@ -69,12 +69,13 @@ jobs:
             sudo apt-get install -y mongodb-mongosh
             mongosh --version
 
-        - name: Initalize MongoDB
+        - name: Initialize MongoDB
           run: |
-            mongosh --host localhost:27017
-              db = db.getSiblingDB('APP-DB');
-              db.createUser({ user: 'APP-USERNAME', pwd: 'APP-PASSWORD', roles: [{ role: 'readWrite', db: 'APP-DB' }] })
-              db.createCollection('APP-COLLECTION');
+              mongosh --host localhost:27017 --eval "
+                db = db.getSiblingDB('APP-DB');
+                db.createCollection('APP-COLLECTION');
+              "
+
           
             
         - name: Initialize python 3.12
