@@ -97,22 +97,22 @@ jobs:
             python -m pip install --upgrade pip
             pip install -r requirements.txt
           
-        - name: Testing
+        # - name: Testing
 
-          env:
-            MODE: ${{secrets.MODE}}
-            MONGODB_URI_TESTS: ${{ secrets.MONGODB_URI_TESTS }}
-            MONGODB_DATABASE_TESTS: ${{ secrets.MONGODB_DATABASE_TESTS }}
-            MONGODB_URL: ${{ secrets.MONGODB_URL }}
-            MONGODB_NAME: ${{ secrets.MONGODB_NAME }}
-            SECRET_KEY: ${{ secrets.SECRET_KEY }}
-            CLIENT_GOOGLE_ID: ${{ secrets.CLIENT_GOOGLE_ID }}
-            CLIENT_SECRET_KEY: ${{ secrets.CLIENT_SECRET_KEY }}
-            SECRET_KEY_ACCESS: ${{ secrets.SECRET_KEY_ACCESS }}
-            SECRET_KEY_REFRESH: ${{ secrets.SECRET_KEY_REFRESH }}
-            ALGORITHM: ${{ secrets.ALGORITHM }}
-            ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
-            REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
+        #   env:
+        #     MODE: ${{secrets.MODE}}
+        #     MONGODB_URI_TESTS: ${{ secrets.MONGODB_URI_TESTS }}
+        #     MONGODB_DATABASE_TESTS: ${{ secrets.MONGODB_DATABASE_TESTS }}
+        #     MONGODB_URL: ${{ secrets.MONGODB_URL }}
+        #     MONGODB_NAME: ${{ secrets.MONGODB_NAME }}
+        #     SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        #     CLIENT_GOOGLE_ID: ${{ secrets.CLIENT_GOOGLE_ID }}
+        #     CLIENT_SECRET_KEY: ${{ secrets.CLIENT_SECRET_KEY }}
+        #     SECRET_KEY_ACCESS: ${{ secrets.SECRET_KEY_ACCESS }}
+        #     SECRET_KEY_REFRESH: ${{ secrets.SECRET_KEY_REFRESH }}
+        #     ALGORITHM: ${{ secrets.ALGORITHM }}
+        #     ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
+        #     REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
             
         - name: Show Mongo URI
           run: |
