@@ -72,9 +72,10 @@ jobs:
               db.createUser({ user: 'APP-USERNAME', pwd: 'APP-PASSWORD', roles: [{ role: 'readWrite', db: 'APP-DB' }] })
               db.createCollection('APP-COLLECTION');
             EOF
-            \
+            
           
         - name: Testing
+
           env:
             MODE: ${{secrets.MODE}}
             MONGODB_URI_TESTS: ${{ secrets.MONGODB_URI_TESTS }}
@@ -89,11 +90,11 @@ jobs:
             ALGORITHM: ${{ secrets.ALGORITHM }}
             ACCESS_TIME_TOKEN: ${{ secrets.ACCESS_TIME_TOKEN }}
             REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
-            run: |
-              make ve
-              source .ve/bin/activate
-              make tests
-      
+          run: |
+            make ve
+            source .ve/bin/activate
+            make tests
+        
 
         
   build:
