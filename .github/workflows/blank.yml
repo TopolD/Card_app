@@ -43,6 +43,7 @@ jobs:
     needs: [lint]
     runs-on: ubuntu-latest
     
+    
     services:
       mongodb:
         image: mongo:4.4.6
@@ -59,7 +60,8 @@ jobs:
           --health-retries 5
 
     steps:
-
+        - uses: actions/checkout@v4
+  
         - name: Install mongosh
           run: |
             sudo apt-get install gnupg
@@ -113,7 +115,6 @@ jobs:
             REFRESH_TOKEN_EXPIRATION: ${{ secrets.REFRESH_TOKEN_EXPIRATION }}
           run: |
             make ve
-            source .ve/bin/activate
             make tests
         
 
