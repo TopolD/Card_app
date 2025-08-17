@@ -73,7 +73,9 @@ jobs:
               db.createCollection('APP-COLLECTION');
             EOF
             
-
+        - name: Create Venv
+          run: make ve
+          
         - name: Testing
           env:
             MODE: ${{secrets.MODE}}
