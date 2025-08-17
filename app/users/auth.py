@@ -31,7 +31,9 @@ def create_token(data: dict, secret_key: str, expiration_time: timedelta) -> str
 
 def create_access_token(data: dict) -> str:
     return create_token(
-        data, settings.SECRET_KEY_ACCESS, timedelta(minutes=int(settings.ACCESS_TIME_TOKEN))
+        data,
+        settings.SECRET_KEY_ACCESS,
+        timedelta(minutes=int(settings.ACCESS_TIME_TOKEN)),
     )
 
 
