@@ -43,7 +43,11 @@ async def login_user(response: Response, user_data: UserLogin):
         raise IncorrectEmailOrPasswordException
     refresh_token = create_refresh_token({"sub": str(user.id)})
     response.set_cookie(
-        "token", value=refresh_token, httponly=True, secure=True, samesite="strict"
+        "token",
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="strict",
     )
 
     access_token = create_access_token({"sub": str(user.id)})

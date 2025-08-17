@@ -18,12 +18,16 @@ def verify_password(plain_password, hashed_password) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_token(data: dict, secret_key: str, expiration_time: timedelta) -> str:
+def create_token(
+    data: dict, secret_key: str, expiration_time: timedelta
+) -> str:
     try:
         to_encode = data.copy()
         expire = datetime.now(timezone.utc) + expiration_time
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=settings.ALGORITHM)
+        encoded_jwt = jwt.encode(
+            to_encode, secret_key, algorithm=settings.ALGORITHM
+        )
         return encoded_jwt
     except (TypeError, ValueError) as e:
         log.error(f"Ошибка создания токена: {e}", exc_info=True)

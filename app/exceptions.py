@@ -9,7 +9,8 @@ UserAlreadyExistsExceptions = HTTPException(
 )
 
 IncorrectEmailOrPasswordException = HTTPException(
-    status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверная почта или пароль"
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Неверная почта или пароль",
 )
 TokenExpiredException = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED, detail="Токен истек"
@@ -24,7 +25,9 @@ IncorrectTokenFormaException = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверный формат токена "
 )
 
-UserIsNotPresentHTTPException = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+UserIsNotPresentHTTPException = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED
+)
 
 
 InactiveUserException = HTTPException(
@@ -36,7 +39,8 @@ FailedToCreateMapException = HTTPException(
 )
 
 FailedToCreatePiggyException = HTTPException(
-    status_code=status.HTTP_400_BAD_REQUEST, detail="Не удалось создать копилку"
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail="Не удалось создать копилку",
 )
 
 

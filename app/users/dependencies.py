@@ -42,5 +42,7 @@ async def current_user(token):
     return user
 
 
-async def get_current_user(token: Annotated[str, Depends(get_token)]) -> ModelUser:
+async def get_current_user(
+    token: Annotated[str, Depends(get_token)],
+) -> ModelUser:
     return await current_user(token)
