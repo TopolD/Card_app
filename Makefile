@@ -5,10 +5,10 @@ ve:
 
 
 docker_build:
-	docker-compose up -d --build
+	docker compose up -d --build
 
 docker_down:
-	docker-compose down
+	docker compose down
 
 tests:
 	export MODE=test && python -m pytest -v
