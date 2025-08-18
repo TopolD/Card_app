@@ -16,8 +16,9 @@ from app.users.models import ModelUser
 async def db_client(event_loop):
     """
         create conn in database
-    :param event_loop:
-    :return:
+
+    :param event_loop
+
     """
     client = AsyncIOMotorClient(settings.MONGODB_URI_TESTS)
     assert client
@@ -54,9 +55,14 @@ async def authenticated_ac():
     async with AsyncClient(
         transport=ASGITransport(app=fastapi_app), base_url="http://test"
     ) as ac:
+
+        await ac.post(
+            "/auth/register",
+            json={"name": "user", "phone_number": "+380986419381", "password": "user"},
+        )
+
         response = await ac.post(
-            "/auth/login",
-            json={"phone_number": "+380986419381", "password": "user"},
+            "/auth/login", json={"phone_number": "+380986419381", "password": "user"}
         )
         token = response.cookies.get("token")
         assert token

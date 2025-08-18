@@ -4,13 +4,13 @@ from app.exceptions import (
     IncorrectEmailOrPasswordException,
     UserAlreadyExistsExceptions,
 )
-from app.users.aouth_google import oauth
 from app.users.auth import (
     auth_user,
     create_access_token,
     create_refresh_token,
     get_password_hash,
 )
+from app.users.auth_google import oauth
 from app.users.models import ModelUser, UsersDao
 from app.users.schemas import UserCreate, UserLogin
 
@@ -43,11 +43,7 @@ async def login_user(response: Response, user_data: UserLogin):
         raise IncorrectEmailOrPasswordException
     refresh_token = create_refresh_token({"sub": str(user.id)})
     response.set_cookie(
-        "token",
-        value=refresh_token,
-        httponly=True,
-        secure=True,
-        samesite="strict",
+        "token", value=refresh_token, httponly=True, secure=True, samesite="strict"
     )
 
     access_token = create_access_token({"sub": str(user.id)})

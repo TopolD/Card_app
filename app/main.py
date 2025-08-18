@@ -21,8 +21,7 @@ from app.users.router import router as router_users
 async def lifespan(app: FastAPI):
     try:
         client = AsyncMongoClient(
-            f"{settings.MONGODB_URL}.{settings.MONGODB_NAME}",
-            server_api=ServerApi("1"),
+            f"{settings.MONGODB_URL}.{settings.MONGODB_NAME}", server_api=ServerApi("1")
         )
         await init_beanie(
             database=client[f"{settings.MONGODB_NAME}"],
@@ -49,10 +48,7 @@ async def add_process_time_header(request: Request, call_next):
     start_time = time.perf_counter()
     response = await call_next(request)
     process_time = time.perf_counter() - start_time
-    log.info(
-        "Request execute time: %s",
-        extra={"process_time": round(process_time, 3)},
-    )
+    log.info("Request execute time: %s", extra={"process_time": round(process_time, 3)})
     return response
 
 

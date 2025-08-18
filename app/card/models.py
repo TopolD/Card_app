@@ -16,7 +16,7 @@ class Transaction(BaseModel):
 class ModelCard(Document):
     name: str
     value: int | None = None
-    history_transaction: Transaction | None = None
+    history_transaction: list[Transaction] | None = None
     user_id: Link[ModelUser]
 
     class Settings:
