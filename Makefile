@@ -14,6 +14,6 @@ tests:
 	export MODE=test && python -m pytest -v
 
 lint:
-	flake8 app
+	flake8 app --max-line-length=88
 	isort app --diff
 	black app --check
