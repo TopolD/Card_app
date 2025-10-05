@@ -22,6 +22,10 @@ def get_token(request: Request) -> str:
     return token
 
 
+async def get_current_user(token: Annotated[str, Depends(get_token)]) -> ModelUser:
+    return await current_user(token)
+
+
 async def current_user(token):
 
     try:
@@ -40,7 +44,3 @@ async def current_user(token):
     if not user:
         raise UserIsNotPresentHTTPException
     return user
-
-
-async def get_current_user(token: Annotated[str, Depends(get_token)]) -> ModelUser:
-    return await current_user(token)

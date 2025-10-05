@@ -4,7 +4,12 @@ from fastapi import APIRouter, Depends
 
 from app.card.models import CardDao, ModelCard
 from app.card.schemas import CardSchema
-from app.exceptions import FailedToCreateMapException
+from app.exceptions import (
+    ExceptionLogg,
+    FailedToCreateMapException,
+    FailedToCreateMapHandlerException,
+)
+from app.logger import log
 from app.users.dependencies import get_current_user
 from app.users.schemas import UserRead
 
@@ -13,27 +18,39 @@ router = APIRouter(prefix="/Card", tags=["Card"])
 
 @router.get("")
 async def get_card(user: Annotated[UserRead, Depends(get_current_user)]):
-    card_obj = await CardDao.find_one_or_none({"user_id": user.id})
-    return card_obj
+    try:
+        card_obj = await CardDao.find_one_or_none({"user_id": user.id})
+        return card_obj
+    except Exception:
+        await ExceptionLogg("None Card")
 
 
 @router.post("/add")
 async def add_card(
     card: CardSchema, user: Annotated[UserRead, Depends(get_current_user)]
 ):
-    card_obj = await CardDao.add(
-        ModelCard(
-            name=card.name,
-            value=card.value,
-            history_transaction=card.history_transaction,
-            user_id=user.id,
+    try:
+        card_obj = await CardDao.add(
+            ModelCard(
+                name=card.name,
+                value=card.value,
+                history_transaction=card.history_transaction,
+                user_id=user.id,
+            )
         )
-    )
-    if not card_obj:
+        if not card_obj:
+            raise FailedToCreateMapHandlerException()
+        return card_obj
+    except FailedToCreateMapHandlerException:
+        log.warning("Failed to create card due to database error", exc_info=True)
         raise FailedToCreateMapException
-    return card_obj
+    except Exception:
+        await ExceptionLogg("Failed Add Card")
 
 
 @router.delete("/del")
 async def delete_card(user: Annotated[UserRead, Depends(get_current_user)]):
-    await CardDao.delete_item({"user_id": user.id})
+    try:
+        await CardDao.delete_item({"user_id": user.id})
+    except Exception:
+        await ExceptionLogg("Don't successful  delete card")
